@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quay Số Ngẫu Nhiên (2 Số & 3 Số)</title>
+    <meta name="theme-color" content="#020617">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Quay Số 2 & 3 Số">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <style>
+        /* =========================================================
+           CSS THUẦN TÚY - TỐI ƯU DARK MODE & CẢM ỨNG DI ĐỘNG
+           ========================================================= */
+        :root {
+            --bg-main: #020617;
+            --bg-card: rgba(15, 23, 42, 0.9);
+            --bg-input: #090e1c;
+            --border-subtle: #1e293b;
+            --border-emerald: rgba(16, 185, 129, 0.35);
+            --border-cyan: rgba(6, 182, 212, 0.35);
+            --border-amber: rgba(245, 158, 11, 0.35);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --emerald: #10b981;
+            --emerald-light: #34d399;
+            --cyan: #06b6d4;
+            --cyan-light: #22d3ee;
+            --amber: #f59e0b;
+            --amber-light: #fbbf24;
+            --rose: #f43f5e;
+            --rose-light: #fb7185;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.45;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            padding-bottom: 36px;
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(16, 185, 129, 0.13) 0%, transparent 40%),
+                radial-gradient(circle at 85% 35%, rgba(6, 182, 212, 0.13) 0%, transparent 42%),
+                radial-gradient(circle at 30% 85%, rgba(245, 158, 11, 0.08) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.45);
+            border-radius: 8px;
+        }
+
+        /* Header cố định */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(2, 6, 23, 0.9);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .header-inner {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #34d399, #14b8a6, #0891b2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #020617;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-size: 16.5px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            background: linear-gradient(90deg, #a7f3d0, #ffffff, #a5f3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-sub {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+
+        .btn-sound {
+            background: rgba(30, 41, 59, 0.92);
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.12s ease, background 0.2s ease;
+        }
+        .btn-sound:active {
+            transform: scale(0.95);
+        }
+
+        /* Container chính */
+        .main-container {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Thanh chuyển đổi chế độ 2 Số / 3 Số */
+        .mode-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .mode-btn {
+            padding: 12px 10px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .mode-btn:active {
+            transform: scale(0.97);
+        }
+
+        .mode-btn-sub {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .mode-btn.active-2 {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.24), rgba(16, 185, 129, 0.2));
+            border-color: rgba(34, 211, 238, 0.65);
+            color: #67e8f9;
+            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.2);
+        }
+
+        .mode-btn.active-3 {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.24), rgba(6, 182, 212, 0.2));
+            border-color: rgba(52, 211, 153, 0.65);
+            color: #6ee7b7;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Thanh trạng thái */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--emerald-light);
+            box-shadow: 0 0 8px var(--emerald-light);
+        }
+
+        .badges-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.14);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .badge-slate {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+        }
+
+        .badge-spinning {
+            background: rgba(6, 182, 212, 0.18);
+            color: #67e8f9;
+            border: 1px solid rgba(6, 182, 212, 0.45);
+        }
+
+        .badge-done {
+            background: rgba(16, 185, 129, 0.18);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+        }
+
+        /* Thẻ Card chung */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.38);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-result {
+            border-color: var(--border-emerald);
+            padding: 20px 16px 16px;
+        }
+
+        .card-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #34d399, #22d3ee, #fbbf24);
+        }
+
+        .card-top-bar-amber {
+            background: linear-gradient(90deg, #fbbf24, #f97316, #f43f5e);
+        }
+
+        /* Lưới 3 ô chữ số & 2 ô chữ số */
+        .digits-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .digits-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        .digit-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .digit-tag {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+
+        .tag-hundreds {
+            background: rgba(16, 185, 129, 0.14);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .tag-tens {
+            background: rgba(6, 182, 212, 0.14);
+            color: #67e8f9;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        .tag-units {
+            background: rgba(245, 158, 11, 0.14);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .digit-box {
+            width: 100%;
+            max-width: 116px;
+            aspect-ratio: 1 / 1;
+            border-radius: 18px;
+            background: linear-gradient(180deg, #1e293b 0%, #090e1c 100%);
+            border: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: clamp(40px, 11.5vw, 58px);
+            font-weight: 800;
+            color: #cbd5e1;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+            user-select: none;
+            transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .digits-grid-2 .digit-box {
+            max-width: 136px;
+            border-radius: 22px;
+            font-size: clamp(48px, 14vw, 66px);
+        }
+
+        .digit-box.rolling {
+            border-color: #38bdf8;
+            color: #7dd3fc;
+            transform: scale(0.96);
+        }
+
+        .digit-box.locked-hundreds {
+            background: linear-gradient(135deg, #34d399, #059669);
+            border-color: #a7f3d0;
+            color: #020617;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            animation: popIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .digit-box.locked-tens {
+            background: linear-gradient(135deg, #22d3ee, #0284c7);
+            border-color: #bae6fd;
+            color: #020617;
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.35);
+            animation: popIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .digit-box.locked-units {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            border-color: #fde68a;
+            color: #020617;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+            animation: popIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.84); }
+            60% { transform: scale(1.07); }
+            100% { transform: scale(1); }
+        }
+
+        /* Chân thẻ kết quả */
+        .result-footer {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .result-summary {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .result-summary-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .result-summary-value {
+            font-family: var(--font-mono);
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            color: var(--emerald-light);
+        }
+
+        .btn-copy-main {
+            background: rgba(16, 185, 129, 0.16);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.12s ease, background 0.2s ease;
+        }
+        .btn-copy-main:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-copy-main:not(:disabled):active {
+            transform: scale(0.95);
+        }
+
+        /* Hàng nút hành động chính */
+        .action-row {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .btn-spin {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(90deg, #34d399 0%, #2dd4bf 50%, #22d3ee 100%);
+            color: #020617;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.28);
+            transition: transform 0.12s ease, opacity 0.2s ease;
+        }
+        .btn-spin:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .btn-spin:disabled {
+            opacity: 0.78;
+            cursor: wait;
+        }
+
+        .btn-reset-board {
+            padding: 0 16px;
+            border-radius: 16px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+        .btn-reset-board:active {
+            transform: scale(0.95);
+        }
+
+        /* Bộ điều chỉnh thời gian quay */
+        .speed-card {
+            border-color: var(--border-cyan);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .speed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .speed-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .speed-badge {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 8px;
+            background: rgba(6, 182, 212, 0.16);
+            color: #67e8f9;
+            border: 1px solid rgba(6, 182, 212, 0.35);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-limit {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            flex: 1;
+            height: 8px;
+            background: #1e293b;
+            border-radius: 999px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #22d3ee;
+            border: 2px solid #020617;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #22d3ee;
+            border: 2px solid #020617;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+            cursor: pointer;
+        }
+
+        .presets-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .preset-label {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+
+        .btn-chip {
+            padding: 6px 11px;
+            border-radius: 9px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+        .btn-chip:active {
+            transform: scale(0.94);
+        }
+        .btn-chip.mono {
+            font-family: var(--font-mono);
+        }
+        .btn-chip.active-cyan {
+            background: rgba(6, 182, 212, 0.22);
+            border-color: rgba(34, 211, 238, 0.6);
+            color: #67e8f9;
+            font-weight: 700;
+        }
+        .btn-chip.active-emerald {
+            color: #6ee7b7;
+        }
+
+        /* Khu vực khóa 5 lượt */
+        .lock-card {
+            border-color: var(--border-amber);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .card-desc {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        .btn-reset-lock {
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.38);
+            color: #fda4af;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+        .btn-reset-lock.confirming {
+            background: #e11d48;
+            border-color: #fb7185;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);
+        }
+
+        .lock-stats-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .locked-tags-box {
+            background: rgba(9, 14, 28, 0.9);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 10px;
+            min-height: 54px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .locked-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 9px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fde68a;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .locked-tag-sub {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 5px;
+            background: rgba(2, 6, 23, 0.85);
+            color: #fbbf24;
+        }
+
+        /* Cấu hình khoảng số & số cấm */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .text-area-banned, .input-num {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            color: #fde68a;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-num {
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .text-area-banned:focus, .input-num:focus {
+            border-color: var(--emerald-light);
+        }
+
+        .range-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 4px 0;
+        }
+
+        /* Lịch sử quay */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .history-item {
+            background: rgba(9, 14, 28, 0.92);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .history-item.is-locked-row {
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+
+        .history-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-index {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            min-width: 28px;
+        }
+
+        .history-num {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 3px 10px;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+        }
+
+        .history-time {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .btn-copy-small {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .btn-copy-small:active {
+            transform: scale(0.94);
+        }
+
+        .btn-clear-history {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .btn-clear-history:hover {
+            color: var(--rose-light);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 24px 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Toast thông báo nổi */
+        .toast-container {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            left: 14px;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            max-width: 420px;
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid #334155;
+            background: rgba(15, 23, 42, 0.96);
+            color: #f8fafc;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .toast-item.success {
+            background: rgba(6, 78, 59, 0.96);
+            border-color: rgba(16, 185, 129, 0.55);
+            color: #a7f3d0;
+        }
+        .toast-item.error {
+            background: rgba(136, 19, 55, 0.96);
+            border-color: rgba(244, 63, 94, 0.55);
+            color: #fecdd3;
+        }
+        .toast-item.info {
+            background: rgba(15, 23, 42, 0.96);
+            border-color: rgba(56, 189, 248, 0.45);
+            color: #e0f2fe;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Vùng thông báo Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-logo" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"></circle>
+                        <circle cx="15.5" cy="8.5" r="1.3" fill="currentColor"></circle>
+                        <circle cx="12" cy="12" r="1.3" fill="currentColor"></circle>
+                        <circle cx="8.5" cy="15.5" r="1.3" fill="currentColor"></circle>
+                        <circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <div class="brand-title" id="header-title">Quay Số 3 Chữ Số</div>
+                    <div class="brand-sub" id="header-sub">Từ 000 đến 999 • Khóa lặp 5 lượt</div>
+                </div>
+            </div>
+
+            <button type="button" id="sound-btn" class="btn-sound" onclick="toggleSound()">
+                <span id="sound-icon" style="color: #34d399; display: inline-flex;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                </span>
+                <span id="sound-label">Âm thanh: Bật</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Nội dung chính -->
+    <main class="main-container">
+
+        <!-- Nút chuyển đổi chế độ 2 Số / 3 Số -->
+        <div class="mode-switcher" role="tablist" aria-label="Chọn chế độ quay số">
+            <button type="button" id="btn-mode-2" class="mode-btn" onclick="switchMode(2)">
+                <span>Quay 2 Chữ Số</span>
+                <span class="mode-btn-sub">00 — 99</span>
+            </button>
+            <button type="button" id="btn-mode-3" class="mode-btn active-3" onclick="switchMode(3)">
+                <span>Quay 3 Chữ Số</span>
+                <span class="mode-btn-sub">000 — 999</span>
+            </button>
+        </div>
+
+        <!-- Thanh trạng thái -->
+        <div class="status-bar">
+            <div class="section-label">
+                <span class="pulse-dot"></span>
+                <span>Kết quả quay số</span>
+            </div>
+            <div class="badges-group">
+                <span class="badge badge-amber" id="protection-badge">Đang khóa: 0 số</span>
+                <span class="badge badge-slate" id="status-badge">Sẵn sàng</span>
+            </div>
+        </div>
+
+        <!-- Khung hiển thị chữ số -->
+        <section class="card card-result">
+            <div class="card-top-bar"></div>
+
+            <div id="digits-grid" class="digits-grid-3">
+                <div class="digit-col" id="col-hundreds">
+                    <span class="digit-tag tag-hundreds">Hàng Trăm</span>
+                    <div id="digit-hundreds" class="digit-box">-</div>
+                </div>
+                <div class="digit-col" id="col-tens">
+                    <span class="digit-tag tag-tens">Hàng Chục</span>
+                    <div id="digit-tens" class="digit-box">-</div>
+                </div>
+                <div class="digit-col" id="col-units">
+                    <span class="digit-tag tag-units">Hàng Đơn Vị</span>
+                    <div id="digit-units" class="digit-box">-</div>
+                </div>
+            </div>
+
+            <div class="result-footer">
+                <div class="result-summary">
+                    <span class="result-summary-label">Số đã quay:</span>
+                    <span id="full-number-display" class="result-summary-value">---</span>
+                </div>
+
+                <button type="button" id="copy-main-btn" class="btn-copy-main" onclick="copyCurrentResult()" disabled>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Sao chép nhanh</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Nút QUAY SỐ NGAY & Làm mới -->
+        <div class="action-row">
+            <button type="button" id="spin-btn" class="btn-spin" onclick="startSpin()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span id="spin-btn-text">QUAY SỐ NGAY</span>
+            </button>
+
+            <button type="button" id="reset-board-btn" class="btn-reset-board" onclick="resetBoardDisplay()" title="Làm mới mặt bảng">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                </svg>
+                <span>Làm mới</span>
+            </button>
+        </div>
+
+        <!-- Chỉnh tốc độ thời gian quay -->
+        <section class="card speed-card">
+            <div class="speed-header">
+                <div class="speed-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Thời gian quay mỗi lượt</span>
+                </div>
+                <span id="speed-display" class="speed-badge">2.0s</span>
+            </div>
+
+            <div class="slider-row">
+                <span class="slider-limit" id="speed-min-label">1.5s</span>
+                <input type="range" id="speed-slider" min="1.5" max="4.0" step="0.1" value="2.0" oninput="onSpeedSliderChange(this.value)" onchange="onSpeedSliderChange(this.value)">
+                <span class="slider-limit" id="speed-max-label">4.0s</span>
+            </div>
+
+            <div class="presets-row" id="speed-presets-row"></div>
+        </section>
+
+        <!-- Khóa chống trùng lặp 5 lượt gần nhất -->
+        <section class="card lock-card">
+            <div class="card-top-bar card-top-bar-amber"></div>
+
+            <div class="card-header-flex">
+                <div>
+                    <div class="card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>Khóa chống trùng lặp 5 lượt gần nhất</span>
+                    </div>
+                    <div class="card-desc">Số đã quay ra sẽ bị khóa tự động trong <strong>5 lượt tiếp theo</strong>.</div>
+                </div>
+
+                <button type="button" id="reset-lock-btn" class="btn-reset-lock" onclick="handleResetLockClick()">
+                    <span id="reset-lock-text">Reset 5 lượt</span>
+                </button>
+            </div>
+
+            <div class="lock-stats-row">
+                <span id="recent-turns-text" style="color: #6ee7b7; font-weight: 700;">Đang lưu: 0 / 5 lượt</span>
+                <span id="available-pool-text" style="color: #94a3b8; font-weight: 600;">Khả dụng: 1000 số</span>
+            </div>
+
+            <div id="locked-tags-container" class="locked-tags-box">
+                <span style="font-size: 12px; color: #64748b; font-style: italic;">Chưa có số nào bị khóa từ 5 lượt gần nhất...</span>
+            </div>
+        </section>
+
+        <!-- Danh sách số cấm & Khoảng số -->
+        <section class="card" style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card-header-flex">
+                <div class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                    </svg>
+                    <span id="filter-card-title">Danh sách số cấm & Khoảng số (000 - 999)</span>
+                </div>
+                <span id="banned-count-badge" class="badge badge-slate" style="color: #fcd34d;">0 số cấm</span>
+            </div>
+
+            <div class="form-group">
+                <label for="blacklist-input" class="form-label" id="blacklist-label">Các số 3 chữ số cấm cố định (không bao giờ xuất hiện):</label>
+                <textarea id="blacklist-input" rows="2" class="text-area-banned" placeholder="Ví dụ: 123, 456 - 007 888" oninput="onSettingsInput()" onchange="onSettingsInput()"></textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="range-grid">
+                <div class="form-group">
+                    <label for="min-num" class="form-label">Số nhỏ nhất (Từ)</label>
+                    <input type="number" id="min-num" class="input-num" value="0" min="0" max="999" oninput="onRangeInput()" onchange="onRangeInput()">
+                </div>
+                <div class="form-group">
+                    <label for="max-num" class="form-label">Số lớn nhất (Đến)</label>
+                    <input type="number" id="max-num" class="input-num" value="999" min="0" max="999" oninput="onRangeInput()" onchange="onRangeInput()">
+                </div>
+            </div>
+
+            <div class="presets-row" id="range-presets-row"></div>
+        </section>
+
+        <!-- Lịch sử quay gần đây (Tối đa 25 lượt) -->
+        <section class="card" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card-header-flex">
+                <div class="card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Lịch sử quay gần đây (<span id="history-count">0</span> / 25)</span>
+                </div>
+
+                <button type="button" id="clear-history-btn" class="btn-clear-history hidden" onclick="clearAllHistory()">
+                    <span>Xóa lịch sử</span>
+                </button>
+            </div>
+
+            <div id="history-list" class="history-list"></div>
+        </section>
+
+    </main>
+
+    <!-- Textarea ẩn hỗ trợ sao chép an toàn trên mọi trình duyệt -->
+    <textarea id="clipboard-helper" style="position: fixed; left: -9999px; top: 0; opacity: 0;" readonly></textarea>
+
+    <script>
+        /* =========================================================
+           JAVASCRIPT THUẦN TÚY - GỘP CHẾ ĐỘ 2 SỐ & 3 SỐ ĐỘC LẬP
+           ========================================================= */
+        var APP_STATE_KEY = 'quay_so_merged_app_v1';
+        var MAX_LOCK_TURNS = 5;
+        var MAX_HISTORY_ITEMS = 25;
+
+        var currentMode = 3; // 2 hoặc 3
+        var isSpinning = false;
+        var soundEnabled = true;
+        var currentResult = null;
+        var isWaitingResetConfirm = false;
+        var resetConfirmTimeout = null;
+        var audioCtx = null;
+
+        // Trạng thái riêng biệt cho từng chế độ (giữ nguyên thông số gốc từng bản)
+        var modeConfigs = {
+            2: {
+                maxVal: 99,
+                minSpeed: 1.9,
+                maxSpeed: 3.3,
+                defaultSpeed: 2.5,
+                speedPresets: [1.9, 2.4, 2.8, 3.3],
+                rangePresets: [[0, 99], [0, 49], [50, 99], [10, 99]],
+                spinDurationSec: 2.5,
+                recentLockedNumbers: [],
+                spinHistory: [],
+                blacklistText: '',
+                minNum: '0',
+                maxNum: '99'
+            },
+            3: {
+                maxVal: 999,
+                minSpeed: 1.5,
+                maxSpeed: 4.0,
+                defaultSpeed: 2.0,
+                speedPresets: [1.5, 2.0, 3.0, 4.0],
+                rangePresets: [[0, 999], [100, 999], [0, 499], [500, 999]],
+                spinDurationSec: 2.0,
+                recentLockedNumbers: [],
+                spinHistory: [],
+                blacklistText: '',
+                minNum: '0',
+                maxNum: '999'
+            }
+        };
+
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        function getCfg() {
+            return modeConfigs[currentMode];
+        }
+
+        function formatNumber(num, modeOverride) {
+            var m = modeOverride || currentMode;
+            var maxV = m === 2 ? 99 : 999;
+            var n = parseInt(num, 10);
+            if (isNaN(n) || n < 0) n = 0;
+            if (n > maxV) n = maxV;
+            if (m === 2) {
+                return n < 10 ? '0' + n : String(n);
+            }
+            if (n < 10) return '00' + n;
+            if (n < 100) return '0' + n;
+            return String(n);
+        }
+
+        function showToast(message, type) {
+            try {
+                var container = $('toast-container');
+                if (!container) return;
+                var toast = document.createElement('div');
+                toast.className = 'toast-item ' + (type || 'info');
+                toast.textContent = message;
+                container.appendChild(toast);
+
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-8px)';
+                    setTimeout(function() {
+                        if (toast.parentNode) toast.parentNode.removeChild(toast);
+                    }, 260);
+                }, 2600);
+            } catch (e) {}
+        }
+
+        // =========================================================
+        // ÂM THANH WEB AUDIO API
+        // =========================================================
+        function getAudioContext() {
+            try {
+                if (!audioCtx) {
+                    var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContextClass) {
+                        audioCtx = new AudioContextClass();
+                    }
+                }
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch (e) {}
+            return audioCtx;
+        }
+
+        function playTone(freq, duration, type, volume) {
+            if (!soundEnabled) return;
+            try {
+                var ctx = getAudioContext();
+                if (!ctx) return;
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(volume || 0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (duration || 0.05));
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + (duration || 0.05));
+            } catch (e) {}
+        }
+
+        function playWinMelody() {
+            if (!soundEnabled) return;
+            var notes = currentMode === 2
+                ? [587.33, 739.99, 880.00, 1174.66]
+                : [523.25, 659.25, 783.99, 1046.50];
+            for (var i = 0; i < notes.length; i++) {
+                (function(idx, freq) {
+                    setTimeout(function() {
+                        playTone(freq, 0.14, 'triangle', 0.11);
+                    }, idx * 65);
+                })(i, notes[i]);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundUI();
+            saveState();
+            if (soundEnabled) {
+                playTone(820, 0.07, 'sine', 0.09);
+            }
+        }
+
+        function updateSoundUI() {
+            var label = $('sound-label');
+            var icon = $('sound-icon');
+            if (!label || !icon) return;
+            if (soundEnabled) {
+                label.textContent = 'Âm thanh: Bật';
+                icon.style.color = '#34d399';
+                icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>';
+            } else {
+                label.textContent = 'Âm thanh: Tắt';
+                icon.style.color = '#64748b';
+                icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+            }
+        }
+
+        // =========================================================
+        // LƯU & KHÔI PHỤC DỮ LIỆU LOCALSTORAGE
+        // =========================================================
+        function syncInputsToCurrentConfig() {
+            var cfg = getCfg();
+            if ($('blacklist-input')) cfg.blacklistText = $('blacklist-input').value;
+            if ($('min-num')) cfg.minNum = $('min-num').value;
+            if ($('max-num')) cfg.maxNum = $('max-num').value;
+        }
+
+        function saveState() {
+            try {
+                syncInputsToCurrentConfig();
+                var payload = {
+                    currentMode: currentMode,
+                    soundEnabled: soundEnabled,
+                    modes: {
+                        2: {
+                            spinDurationSec: modeConfigs[2].spinDurationSec,
+                            recentLockedNumbers: modeConfigs[2].recentLockedNumbers.slice(0, MAX_LOCK_TURNS),
+                            spinHistory: modeConfigs[2].spinHistory.slice(0, MAX_HISTORY_ITEMS),
+                            blacklistText: modeConfigs[2].blacklistText,
+                            minNum: modeConfigs[2].minNum,
+                            maxNum: modeConfigs[2].maxNum
+                        },
+                        3: {
+                            spinDurationSec: modeConfigs[3].spinDurationSec,
+                            recentLockedNumbers: modeConfigs[3].recentLockedNumbers.slice(0, MAX_LOCK_TURNS),
+                            spinHistory: modeConfigs[3].spinHistory.slice(0, MAX_HISTORY_ITEMS),
+                            blacklistText: modeConfigs[3].blacklistText,
+                            minNum: modeConfigs[3].minNum,
+                            maxNum: modeConfigs[3].maxNum
+                        }
+                    }
+                };
+                localStorage.setItem(APP_STATE_KEY, JSON.stringify(payload));
+            } catch (e) {}
+        }
+
+        function loadState() {
+            try {
+                // Tự động kế thừa dữ liệu cũ của người dùng nếu có
+                var legacy3 = localStorage.getItem('quay_so_3_chu_so_v4');
+                if (legacy3) {
+                    var d3 = JSON.parse(legacy3);
+                    if (d3 && typeof d3 === 'object') {
+                        if (typeof d3.spinDurationSec === 'number') modeConfigs[3].spinDurationSec = d3.spinDurationSec;
+                        if (Array.isArray(d3.recentLockedNumbers)) modeConfigs[3].recentLockedNumbers = d3.recentLockedNumbers.slice(0, MAX_LOCK_TURNS);
+                        if (Array.isArray(d3.spinHistory)) modeConfigs[3].spinHistory = d3.spinHistory.slice(0, MAX_HISTORY_ITEMS);
+                        if (typeof d3.blacklistText === 'string') modeConfigs[3].blacklistText = d3.blacklistText;
+                        if (d3.minNum !== undefined) modeConfigs[3].minNum = String(d3.minNum);
+                        if (d3.maxNum !== undefined) modeConfigs[3].maxNum = String(d3.maxNum);
+                    }
+                }
+                var legacy2 = localStorage.getItem('quay_so_2_chu_so_history_v1');
+                if (legacy2) {
+                    var d2 = JSON.parse(legacy2);
+                    if (d2 && typeof d2 === 'object') {
+                        if (typeof d2.spinDurationSec === 'number') modeConfigs[2].spinDurationSec = d2.spinDurationSec;
+                        if (Array.isArray(d2.recentLockedNumbers)) modeConfigs[2].recentLockedNumbers = d2.recentLockedNumbers.slice(0, MAX_LOCK_TURNS);
+                        if (Array.isArray(d2.spinHistory)) modeConfigs[2].spinHistory = d2.spinHistory.slice(0, MAX_HISTORY_ITEMS);
+                        if (typeof d2.blacklistText === 'string') modeConfigs[2].blacklistText = d2.blacklistText;
+                        if (d2.minNum !== undefined) modeConfigs[2].minNum = String(d2.minNum);
+                        if (d2.maxNum !== undefined) modeConfigs[2].maxNum = String(d2.maxNum);
+                    }
+                }
+
+                // Tải trạng thái gộp mới nhất
+                var raw = localStorage.getItem(APP_STATE_KEY);
+                if (!raw) return;
+                var data = JSON.parse(raw);
+                if (!data || typeof data !== 'object') return;
+
+                if (data.currentMode === 2 || data.currentMode === 3) {
+                    currentMode = data.currentMode;
+                }
+                if (typeof data.soundEnabled === 'boolean') {
+                    soundEnabled = data.soundEnabled;
+                }
+
+                if (data.modes) {
+                    [2, 3].forEach(function(m) {
+                        var savedM = data.modes[m];
+                        var targetM = modeConfigs[m];
+                        if (!savedM || typeof savedM !== 'object') return;
+                        if (typeof savedM.spinDurationSec === 'number' && savedM.spinDurationSec >= targetM.minSpeed && savedM.spinDurationSec <= targetM.maxSpeed) {
+                            targetM.spinDurationSec = Number(savedM.spinDurationSec.toFixed(1));
+                        }
+                        if (Array.isArray(savedM.recentLockedNumbers)) {
+                            targetM.recentLockedNumbers = savedM.recentLockedNumbers.slice(0, MAX_LOCK_TURNS).map(function(n) {
+                                return parseInt(n, 10);
+                            }).filter(function(n) {
+                                return !isNaN(n) && n >= 0 && n <= targetM.maxVal;
+                            });
+                        }
+                        if (Array.isArray(savedM.spinHistory)) {
+                            targetM.spinHistory = savedM.spinHistory.slice(0, MAX_HISTORY_ITEMS);
+                        }
+                        if (typeof savedM.blacklistText === 'string') {
+                            targetM.blacklistText = savedM.blacklistText;
+                        }
+                        if (savedM.minNum !== undefined) {
+                            targetM.minNum = String(savedM.minNum);
+                        }
+                        if (savedM.maxNum !== undefined) {
+                            targetM.maxNum = String(savedM.maxNum);
+                        }
+                    });
+                }
+            } catch (e) {}
+        }
+
+        // =========================================================
+        // CHUYỂN ĐỔI CHẾ ĐỘ 2 SỐ / 3 SỐ
+        // =========================================================
+        function switchMode(newMode) {
+            if (isSpinning) {
+                showToast('Vui lòng đợi lượt quay hiện tại hoàn tất!', 'info');
+                return;
+            }
+            if (newMode !== 2 && newMode !== 3) return;
+            if (newMode === currentMode) return;
+
+            syncInputsToCurrentConfig();
+            clearTimeout(resetConfirmTimeout);
+            resetConfirmUI();
+
+            currentMode = newMode;
+            currentResult = null;
+            saveState();
+            applyModeUI();
+            showToast(newMode === 2 ? 'Đã chuyển sang chế độ Quay 2 Số (00 - 99)' : 'Đã chuyển sang chế độ Quay 3 Số (000 - 999)', 'info');
+        }
+
+        function applyModeUI() {
+            var cfg = getCfg();
+            var isTwo = currentMode === 2;
+
+            // Cập nhật nút Tab chuyển chế độ
+            var btn2 = $('btn-mode-2');
+            var btn3 = $('btn-mode-3');
+            if (btn2) btn2.className = isTwo ? 'mode-btn active-2' : 'mode-btn';
+            if (btn3) btn3.className = !isTwo ? 'mode-btn active-3' : 'mode-btn';
+
+            // Header
+            if ($('header-title')) $('header-title').textContent = isTwo ? 'Quay Số 2 Chữ Số' : 'Quay Số 3 Chữ Số';
+            if ($('header-sub')) $('header-sub').textContent = isTwo ? 'Từ 00 đến 99 • Khóa lặp 5 lượt' : 'Từ 000 đến 999 • Khóa lặp 5 lượt';
+
+            // Khung hiển thị ô số (ẩn/hiện cột Hàng Trăm)
+            var grid = $('digits-grid');
+            var colHundreds = $('col-hundreds');
+            if (grid) grid.className = isTwo ? 'digits-grid-2' : 'digits-grid-3';
+            if (colHundreds) {
+                if (isTwo) colHundreds.classList.add('hidden');
+                else colHundreds.classList.remove('hidden');
+            }
+
+            // Làm mới mặt bảng hiển thị
+            var boxIds = ['digit-hundreds', 'digit-tens', 'digit-units'];
+            for (var i = 0; i < boxIds.length; i++) {
+                var box = $(boxIds[i]);
+                if (box) {
+                    box.textContent = '-';
+                    box.className = 'digit-box';
+                }
+            }
+            if ($('full-number-display')) $('full-number-display').textContent = isTwo ? '--' : '---';
+            if ($('copy-main-btn')) $('copy-main-btn').disabled = true;
+            if ($('spin-btn-text')) $('spin-btn-text').textContent = 'QUAY SỐ NGAY';
+            if ($('status-badge')) {
+                $('status-badge').textContent = 'Sẵn sàng';
+                $('status-badge').className = 'badge badge-slate';
+            }
+
+            // Thanh trượt thời gian quay & nút chọn nhanh tốc độ
+            var slider = $('speed-slider');
+            if (slider) {
+                slider.min = cfg.minSpeed.toFixed(1);
+                slider.max = cfg.maxSpeed.toFixed(1);
+                slider.value = cfg.spinDurationSec.toFixed(1);
+            }
+            if ($('speed-min-label')) $('speed-min-label').textContent = cfg.minSpeed.toFixed(1) + 's';
+            if ($('speed-max-label')) $('speed-max-label').textContent = cfg.maxSpeed.toFixed(1) + 's';
+
+            var speedPresetsRow = $('speed-presets-row');
+            if (speedPresetsRow) {
+                var spHtml = '<span class="preset-label">Chọn nhanh:</span>';
+                for (var s = 0; s < cfg.speedPresets.length; s++) {
+                    var val = cfg.speedPresets[s];
+                    spHtml += '<button type="button" class="btn-chip mono speed-preset" data-val="' + val.toFixed(1) + '" onclick="setQuickSpeed(' + val.toFixed(1) + ')">' + val.toFixed(1) + 's</button>';
+                }
+                speedPresetsRow.innerHTML = spHtml;
+            }
+            updateSpeedUI();
+
+            // Bộ lọc số cấm & khoảng số
+            if ($('filter-card-title')) {
+                $('filter-card-title').textContent = isTwo
+                    ? 'Danh sách số cấm & Khoảng số (00 - 99)'
+                    : 'Danh sách số cấm & Khoảng số (000 - 999)';
+            }
+            if ($('blacklist-label')) {
+                $('blacklist-label').textContent = isTwo
+                    ? 'Các số 2 chữ số cấm cố định (không bao giờ xuất hiện):'
+                    : 'Các số 3 chữ số cấm cố định (không bao giờ xuất hiện):';
+            }
+            var blInput = $('blacklist-input');
+            if (blInput) {
+                blInput.placeholder = isTwo ? 'Ví dụ: 00, 13, 49, 53, 99' : 'Ví dụ: 123, 456 - 007 888';
+                blInput.value = cfg.blacklistText;
+            }
+
+            var minEl = $('min-num');
+            var maxEl = $('max-num');
+            if (minEl) {
+                minEl.max = String(cfg.maxVal);
+                minEl.value = cfg.minNum;
+            }
+            if (maxEl) {
+                maxEl.max = String(cfg.maxVal);
+                maxEl.value = cfg.maxNum;
+            }
+
+            var rangePresetsRow = $('range-presets-row');
+            if (rangePresetsRow) {
+                var rpHtml = '<span class="preset-label">Chọn nhanh:</span>';
+                for (var r = 0; r < cfg.rangePresets.length; r++) {
+                    var pair = cfg.rangePresets[r];
+                    var activeCls = r === 0 ? ' active-emerald' : '';
+                    rpHtml += '<button type="button" class="btn-chip' + activeCls + '" onclick="setQuickRange(' + pair[0] + ', ' + pair[1] + ')">' +
+                        formatNumber(pair[0]) + ' - ' + formatNumber(pair[1]) + '</button>';
+                }
+                rangePresetsRow.innerHTML = rpHtml;
+            }
+
+            updateLockAndFilterUI();
+            renderHistory();
+        }
+
+        // =========================================================
+        // ĐIỀU CHỈNH TỐC ĐỘ QUAY
+        // =========================================================
+        function onSpeedSliderChange(val) {
+            var cfg = getCfg();
+            var num = parseFloat(val);
+            if (isNaN(num)) return;
+            if (num < cfg.minSpeed) num = cfg.minSpeed;
+            if (num > cfg.maxSpeed) num = cfg.maxSpeed;
+            cfg.spinDurationSec = Number(num.toFixed(1));
+            updateSpeedUI();
+            saveState();
+        }
+
+        function setQuickSpeed(sec) {
+            var cfg = getCfg();
+            var num = parseFloat(sec);
+            if (isNaN(num)) return;
+            cfg.spinDurationSec = Number(Math.min(cfg.maxSpeed, Math.max(cfg.minSpeed, num)).toFixed(1));
+            updateSpeedUI();
+            saveState();
+            showToast('Thời gian quay: ' + cfg.spinDurationSec.toFixed(1) + ' giây', 'info');
+        }
+
+        function updateSpeedUI() {
+            var cfg = getCfg();
+            var display = $('speed-display');
+            var slider = $('speed-slider');
+            if (display) display.textContent = cfg.spinDurationSec.toFixed(1) + 's';
+            if (slider) slider.value = cfg.spinDurationSec.toFixed(1);
+
+            var presets = document.querySelectorAll('.speed-preset');
+            for (var i = 0; i < presets.length; i++) {
+                var btn = presets[i];
+                var btnVal = parseFloat(btn.getAttribute('data-val'));
+                if (Math.abs(btnVal - cfg.spinDurationSec) < 0.05) {
+                    btn.classList.add('active-cyan');
+                } else {
+                    btn.classList.remove('active-cyan');
+                }
+            }
+        }
+
+        // =========================================================
+        // BỘ LỌC SỐ CẤM & KHOẢNG SỐ HỢP LỆ
+        // =========================================================
+        function parseBlacklist() {
+            var cfg = getCfg();
+            var el = $('blacklist-input');
+            var map = {};
+            if (!el || !el.value) return map;
+            var tokens = el.value.match(/\d+/g);
+            if (!tokens) return map;
+            for (var i = 0; i < tokens.length; i++) {
+                var n = parseInt(tokens[i], 10);
+                if (!isNaN(n) && n >= 0 && n <= cfg.maxVal) {
+                    map[n] = true;
+                }
+            }
+            return map;
+        }
+
+        function getRangeBounds() {
+            var cfg = getCfg();
+            var minEl = $('min-num');
+            var maxEl = $('max-num');
+            var min = minEl ? parseInt(minEl.value, 10) : 0;
+            var max = maxEl ? parseInt(maxEl.value, 10) : cfg.maxVal;
+            if (isNaN(min)) min = 0;
+            if (isNaN(max)) max = cfg.maxVal;
+            if (min < 0) min = 0;
+            if (min > cfg.maxVal) min = cfg.maxVal;
+            if (max < 0) max = 0;
+            if (max > cfg.maxVal) max = cfg.maxVal;
+            return { min: min, max: max };
+        }
+
+        function computeAvailablePool() {
+            var cfg = getCfg();
+            var bounds = getRangeBounds();
+            if (bounds.min > bounds.max) return [];
+
+            var blacklistMap = parseBlacklist();
+            var recentMap = {};
+            for (var i = 0; i < cfg.recentLockedNumbers.length; i++) {
+                recentMap[cfg.recentLockedNumbers[i]] = true;
+            }
+
+            var pool = [];
+            for (var num = bounds.min; num <= bounds.max; num++) {
+                if (!blacklistMap[num] && !recentMap[num]) {
+                    pool.push(num);
+                }
+            }
+            return pool;
+        }
+
+        function onSettingsInput() {
+            saveState();
+            updateLockAndFilterUI();
+        }
+
+        function onRangeInput() {
+            var cfg = getCfg();
+            var minEl = $('min-num');
+            var maxEl = $('max-num');
+            if (minEl && minEl.value !== '') {
+                var v1 = parseInt(minEl.value, 10);
+                if (!isNaN(v1)) {
+                    if (v1 < 0) minEl.value = 0;
+                    if (v1 > cfg.maxVal) minEl.value = cfg.maxVal;
+                }
+            }
+            if (maxEl && maxEl.value !== '') {
+                var v2 = parseInt(maxEl.value, 10);
+                if (!isNaN(v2)) {
+                    if (v2 < 0) maxEl.value = 0;
+                    if (v2 > cfg.maxVal) maxEl.value = cfg.maxVal;
+                }
+            }
+            saveState();
+            updateLockAndFilterUI();
+        }
+
+        function setQuickRange(minVal, maxVal) {
+            if ($('min-num')) $('min-num').value = minVal;
+            if ($('max-num')) $('max-num').value = maxVal;
+            saveState();
+            updateLockAndFilterUI();
+            showToast('Đã chọn khoảng số: ' + formatNumber(minVal) + ' - ' + formatNumber(maxVal), 'info');
+        }
+
+        function updateLockAndFilterUI() {
+            var cfg = getCfg();
+            var blacklistMap = parseBlacklist();
+            var bannedCount = Object.keys(blacklistMap).length;
+            var pool = computeAvailablePool();
+
+            var totalBlockedMap = {};
+            for (var k in blacklistMap) {
+                if (Object.prototype.hasOwnProperty.call(blacklistMap, k)) {
+                    totalBlockedMap[k] = true;
+                }
+            }
+            for (var i = 0; i < cfg.recentLockedNumbers.length; i++) {
+                totalBlockedMap[cfg.recentLockedNumbers[i]] = true;
+            }
+            var totalBlockedCount = Object.keys(totalBlockedMap).length;
+
+            if ($('banned-count-badge')) {
+                $('banned-count-badge').textContent = bannedCount + ' số cấm';
+            }
+            if ($('protection-badge')) {
+                $('protection-badge').textContent = 'Đang khóa: ' + totalBlockedCount + ' số';
+            }
+            if ($('recent-turns-text')) {
+                $('recent-turns-text').textContent = 'Đang lưu: ' + cfg.recentLockedNumbers.length + ' / ' + MAX_LOCK_TURNS + ' lượt';
+            }
+
+            var availEl = $('available-pool-text');
+            if (availEl) {
+                var bounds = getRangeBounds();
+                if (bounds.min > bounds.max) {
+                    availEl.textContent = 'Khoảng số không hợp lệ';
+                    availEl.style.color = '#fb7185';
+                } else {
+                    availEl.textContent = 'Khả dụng: ' + pool.length + ' số';
+                    availEl.style.color = pool.length === 0 ? '#fb7185' : '#34d399';
+                }
+            }
+
+            var container = $('locked-tags-container');
+            if (!container) return;
+
+            if (cfg.recentLockedNumbers.length === 0) {
+                container.innerHTML = '<span style="font-size: 12px; color: #64748b; font-style: italic;">Chưa có số nào bị khóa từ 5 lượt gần nhất...</span>';
+                return;
+            }
+
+            var html = '';
+            for (var idx = 0; idx < cfg.recentLockedNumbers.length; idx++) {
+                var lockedNum = cfg.recentLockedNumbers[idx];
+                var remainingTurns = MAX_LOCK_TURNS - idx;
+                html += '<span class="locked-tag">' +
+                    '<span>' + formatNumber(lockedNum) + '</span>' +
+                    '<span class="locked-tag-sub">(còn ' + remainingTurns + ' lượt)</span>' +
+                    '</span>';
+            }
+            container.innerHTML = html;
+        }
+
+        function handleResetLockClick() {
+            var cfg = getCfg();
+            var btn = $('reset-lock-btn');
+            var textEl = $('reset-lock-text');
+            if (!btn || !textEl) return;
+
+            if (!isWaitingResetConfirm) {
+                if (cfg.recentLockedNumbers.length === 0) {
+                    showToast('Bộ nhớ khóa 5 lượt hiện đang trống!', 'info');
+                    return;
+                }
+                isWaitingResetConfirm = true;
+                btn.classList.add('confirming');
+                textEl.textContent = 'Bấm lại xác nhận';
+
+                clearTimeout(resetConfirmTimeout);
+                resetConfirmTimeout = setTimeout(function() {
+                    resetConfirmUI();
+                }, 3200);
+            } else {
+                clearTimeout(resetConfirmTimeout);
+                resetConfirmUI();
+                cfg.recentLockedNumbers = [];
+                saveState();
+                updateLockAndFilterUI();
+                renderHistory();
+                showToast('Đã mở khóa toàn bộ 5 lượt gần nhất!', 'success');
+            }
+        }
+
+        function resetConfirmUI() {
+            isWaitingResetConfirm = false;
+            var btn = $('reset-lock-btn');
+            var textEl = $('reset-lock-text');
+            if (btn) btn.classList.remove('confirming');
+            if (textEl) textEl.textContent = 'Reset 5 lượt';
+        }
+
+        // =========================================================
+        // THUẬT TOÁN QUAY SỐ CHẬM DẦN (EASING) & CHỐT TỪNG HÀNG
+        // =========================================================
+        function startSpin() {
+            if (isSpinning) return;
+
+            var cfg = getCfg();
+            var bounds = getRangeBounds();
+            if (bounds.min > bounds.max) {
+                showToast('Số nhỏ nhất phải nhỏ hơn hoặc bằng số lớn nhất!', 'error');
+                return;
+            }
+
+            var pool = computeAvailablePool();
+            if (pool.length === 0) {
+                showToast('Không còn số khả dụng để quay! Hãy bấm "Reset 5 lượt" hoặc giảm số cấm.', 'error');
+                return;
+            }
+
+            var chosenNumber = pool[Math.floor(Math.random() * pool.length)];
+            var formattedTarget = formatNumber(chosenNumber);
+            var isTwo = currentMode === 2;
+
+            var targetDigits = isTwo
+                ? [formattedTarget.charAt(0), formattedTarget.charAt(1)]
+                : [formattedTarget.charAt(0), formattedTarget.charAt(1), formattedTarget.charAt(2)];
+
+            isSpinning = true;
+            var spinBtn = $('spin-btn');
+            var spinBtnText = $('spin-btn-text');
+            var statusBadge = $('status-badge');
+            var fullDisplay = $('full-number-display');
+            var copyMainBtn = $('copy-main-btn');
+
+            if (spinBtn) spinBtn.disabled = true;
+            if (spinBtnText) spinBtnText.textContent = 'ĐANG QUAY...';
+            if (statusBadge) {
+                statusBadge.textContent = 'Đang chạy số...';
+                statusBadge.className = 'badge badge-spinning';
+            }
+            if (fullDisplay) fullDisplay.textContent = isTwo ? '--' : '---';
+            if (copyMainBtn) copyMainBtn.disabled = true;
+
+            var boxIds = isTwo
+                ? ['digit-tens', 'digit-units']
+                : ['digit-hundreds', 'digit-tens', 'digit-units'];
+            var lockClasses = isTwo
+                ? ['locked-tens', 'locked-units']
+                : ['locked-hundreds', 'locked-tens', 'locked-units'];
+            var digitCount = boxIds.length;
+            var lockedFlags = isTwo ? [false, false] : [false, false, false];
+            var lastTickTime = isTwo ? [0, 0] : [0, 0, 0];
+
+            for (var i = 0; i < digitCount; i++) {
+                var box = $(boxIds[i]);
+                if (box) {
+                    box.className = 'digit-box rolling';
+                }
+            }
+
+            var totalMs = cfg.spinDurationSec * 1000;
+            var stopTimes = isTwo
+                ? [totalMs * 0.74, totalMs]
+                : [totalMs * 0.65, totalMs * 0.82, totalMs];
+
+            var startTime = performance.now ? performance.now() : Date.now();
+
+            function step(now) {
+                var currentTime = now || (performance.now ? performance.now() : Date.now());
+                var elapsed = currentTime - startTime;
+                var anySoundThisFrame = false;
+
+                for (var idx = 0; idx < digitCount; idx++) {
+                    var boxEl = $(boxIds[idx]);
+                    if (!boxEl) continue;
+
+                    if (elapsed >= stopTimes[idx]) {
+                        if (!lockedFlags[idx]) {
+                            lockedFlags[idx] = true;
+                            boxEl.textContent = targetDigits[idx];
+                            boxEl.className = 'digit-box ' + lockClasses[idx];
+                            playTone(620 + idx * 150, 0.08, 'triangle', 0.11);
+                        }
+                    } else {
+                        var progress = Math.min(1, elapsed / stopTimes[idx]);
+                        var easeCurve = progress * progress;
+                        var tickInterval = 34 + easeCurve * 115;
+
+                        if (currentTime - lastTickTime[idx] >= tickInterval) {
+                            lastTickTime[idx] = currentTime;
+                            var randDigit = Math.floor(Math.random() * 10);
+                            boxEl.textContent = String(randDigit);
+                            if (!anySoundThisFrame) {
+                                playTone(350, 0.025, 'sine', 0.04);
+                                anySoundThisFrame = true;
+                            }
+                        }
+                    }
+                }
+
+                var allLocked = isTwo
+                    ? (lockedFlags[0] && lockedFlags[1])
+                    : (lockedFlags[0] && lockedFlags[1] && lockedFlags[2]);
+
+                if (allLocked) {
+                    finishSpin(chosenNumber, formattedTarget);
+                } else {
+                    if (window.requestAnimationFrame) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        setTimeout(function() { step(Date.now()); }, 20);
+                    }
+                }
+            }
+
+            if (window.requestAnimationFrame) {
+                window.requestAnimationFrame(step);
+            } else {
+                setTimeout(function() { step(Date.now()); }, 20);
+            }
+        }
+
+        function finishSpin(chosenNumber, formattedTarget) {
+            var cfg = getCfg();
+            isSpinning = false;
+            currentResult = formattedTarget;
+
+            var spinBtn = $('spin-btn');
+            var spinBtnText = $('spin-btn-text');
+            var statusBadge = $('status-badge');
+            var fullDisplay = $('full-number-display');
+            var copyMainBtn = $('copy-main-btn');
+
+            if (spinBtn) spinBtn.disabled = false;
+            if (spinBtnText) spinBtnText.textContent = 'QUAY TIẾP';
+            if (statusBadge) {
+                statusBadge.textContent = 'Hoàn tất!';
+                statusBadge.className = 'badge badge-done';
+            }
+            if (fullDisplay) fullDisplay.textContent = formattedTarget;
+            if (copyMainBtn) copyMainBtn.disabled = false;
+
+            playWinMelody();
+
+            cfg.recentLockedNumbers.unshift(chosenNumber);
+            if (cfg.recentLockedNumbers.length > MAX_LOCK_TURNS) {
+                cfg.recentLockedNumbers = cfg.recentLockedNumbers.slice(0, MAX_LOCK_TURNS);
+            }
+
+            var now = new Date();
+            var hh = now.getHours() < 10 ? '0' + now.getHours() : String(now.getHours());
+            var mm = now.getMinutes() < 10 ? '0' + now.getMinutes() : String(now.getMinutes());
+            var ss = now.getSeconds() < 10 ? '0' + now.getSeconds() : String(now.getSeconds());
+
+            cfg.spinHistory.unshift({
+                id: Date.now() + Math.floor(Math.random() * 1000),
+                number: chosenNumber,
+                time: hh + ':' + mm + ':' + ss
+            });
+            if (cfg.spinHistory.length > MAX_HISTORY_ITEMS) {
+                cfg.spinHistory = cfg.spinHistory.slice(0, MAX_HISTORY_ITEMS);
+            }
+
+            saveState();
+            updateLockAndFilterUI();
+            renderHistory();
+        }
+
+        function resetBoardDisplay() {
+            if (isSpinning) return;
+            var isTwo = currentMode === 2;
+            var boxIds = ['digit-hundreds', 'digit-tens', 'digit-units'];
+            for (var i = 0; i < 3; i++) {
+                var box = $(boxIds[i]);
+                if (box) {
+                    box.textContent = '-';
+                    box.className = 'digit-box';
+                }
+            }
+            currentResult = null;
+            if ($('full-number-display')) $('full-number-display').textContent = isTwo ? '--' : '---';
+            if ($('copy-main-btn')) $('copy-main-btn').disabled = true;
+            if ($('spin-btn-text')) $('spin-btn-text').textContent = 'QUAY SỐ NGAY';
+            if ($('status-badge')) {
+                $('status-badge').textContent = 'Sẵn sàng';
+                $('status-badge').className = 'badge badge-slate';
+            }
+            showToast('Đã làm mới bảng hiển thị (Bộ nhớ khóa 5 lượt vẫn giữ nguyên)', 'info');
+        }
+
+        // =========================================================
+        // LỊCH SỬ QUAY & SAO CHÉP NHANH
+        // =========================================================
+        function renderHistory() {
+            var cfg = getCfg();
+            var listEl = $('history-list');
+            var countEl = $('history-count');
+            var clearBtn = $('clear-history-btn');
+            if (!listEl) return;
+
+            if (countEl) countEl.textContent = String(cfg.spinHistory.length);
+
+            if (cfg.spinHistory.length === 0) {
+                if (clearBtn) clearBtn.classList.add('hidden');
+                var rangeTxt = currentMode === 2 ? '2 chữ số (00 - 99)' : '3 chữ số (000 - 999)';
+                listEl.innerHTML = '<div id="history-empty" class="empty-state">' +
+                    '<div style="font-weight: 600; color: #94a3b8;">Chưa có lượt quay nào</div>' +
+                    '<div style="font-size: 12px; margin-top: 4px;">Bấm nút "QUAY SỐ NGAY" phía trên để tạo số ' + rangeTxt + '</div>' +
+                    '</div>';
+                return;
+            }
+
+            if (clearBtn) clearBtn.classList.remove('hidden');
+
+            var html = '';
+            for (var i = 0; i < cfg.spinHistory.length; i++) {
+                var item = cfg.spinHistory[i];
+                var formatted = formatNumber(item.number);
+                var isStillLocked = i < cfg.recentLockedNumbers.length;
+                var remLock = MAX_LOCK_TURNS - i;
+
+                html += '<div class="history-item' + (isStillLocked ? ' is-locked-row' : '') + '">' +
+                    '<div class="history-left">' +
+                        '<span class="history-index">#' + (i + 1) + '</span>' +
+                        '<span class="history-num">' + formatted + '</span>' +
+                        '<span class="history-time">' + item.time + '</span>' +
+                        (isStillLocked ? '<span class="locked-tag-sub">Khóa ' + remLock + ' lượt</span>' : '') +
+                    '</div>' +
+                    '<button type="button" class="btn-copy-small" onclick="copyText(\'' + formatted + '\')">Chép</button>' +
+                '</div>';
+            }
+            listEl.innerHTML = html;
+        }
+
+        function clearAllHistory() {
+            var cfg = getCfg();
+            cfg.spinHistory = [];
+            saveState();
+            renderHistory();
+            showToast('Đã xóa danh sách lịch sử hiển thị (Bộ nhớ khóa 5 lượt vẫn giữ nguyên)', 'info');
+        }
+
+        function copyText(text) {
+            if (!text) return;
+            var helper = $('clipboard-helper');
+            if (helper) {
+                helper.value = text;
+                helper.select();
+                helper.setSelectionRange(0, 99999);
+                try {
+                    var ok = document.execCommand('copy');
+                    if (ok) {
+                        showToast('Đã sao chép số: ' + text, 'success');
+                        return;
+                    }
+                } catch (e) {}
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showToast('Đã sao chép số: ' + text, 'success');
+                }).catch(function() {
+                    showToast('Không thể sao chép tự động, vui lòng thử lại.', 'error');
+                });
+            }
+        }
+
+        function copyCurrentResult() {
+            if (!currentResult) return;
+            copyText(currentResult);
+        }
+
+        // Khởi chạy ngay lập tức khi mở trang
+        (function initApp() {
+            loadState();
+            updateSoundUI();
+            applyModeUI();
+        })();
+    </script>
+</body>
+</html>
